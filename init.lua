@@ -127,6 +127,8 @@ vim.o.undofile = true
 -- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
 vim.o.ignorecase = true
 vim.o.smartcase = true
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
 
 -- Keep signcolumn on by default
 vim.o.signcolumn = 'yes'
@@ -149,7 +151,7 @@ vim.o.splitright = true
 --  It is very similar to `vim.o` but offers an interface for conveniently interacting with tables.
 --   See `:help lua-options`
 --   and `:help lua-options-guide`
-vim.o.list = true
+vim.o.list = false
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
 -- Preview substitutions live, as you type!
@@ -665,6 +667,85 @@ require('lazy').setup({
   --     vim.keymap.set('x', 's', substitute.visual, { desc = 'Substitute in visual mode' })
   --   end,
   -- },
+  -- -- nvim v0.8.0
+  {
+    'kdheepak/lazygit.nvim',
+    lazy = true,
+    cmd = {
+      'LazyGit',
+      'LazyGitConfig',
+      'LazyGitCurrentFile',
+      'LazyGitFilter',
+      'LazyGitFilterCurrentFile',
+    },
+    -- optional for floating window border decoration
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+    },
+    -- setting the keybinding for LazyGit with 'keys' is recommended in
+    -- order to load the plugin when the command is run for the first time
+    keys = {
+      { '<leader>lg', '<cmd>LazyGit<cr>', desc = 'LazyGit' },
+    },
+  },
+  {
+    'rest-nvim/rest.nvim',
+    dependencies = { { 'nvim-lua/plenary.nvim' } },
+    config = function()
+      require('rest-nvim').setup {
+        -- Open request results in a horizontal split
+        result_split_horizontal = false,
+        -- Keep the http file buffer above|left when split horizontal|vertical
+        result_split_in_place = false,
+        -- stay in current windows (.http file) or change to results window (default)
+        stay_in_current_window_after_split = false,
+        -- Skip SSL verification, useful for unknown certificates
+        skip_ssl_verification = false,
+        -- Encode URL before making request
+        encode_url = true,
+        -- Highlight request on run
+        highlight = {
+          enabled = true,
+          timeout = 150,
+        },
+        result = {
+
+          -- toggle showing URL, HTTP info, headers at top the of result window
+          show_url = true,
+          -- show the generated curl command in case you want to launch
+          -- the same request via the terminal (can be verbose)
+          show_curl_command = false,
+          show_http_info = true,
+          show_headers = true,
+          -- table of curl `--write-out` variables or false if disabled
+          -- for more granular control see Statistics Spec
+          show_statistics = false,
+          -- executables or functions for formatting response body [optional]
+          -- set them to false if you want to disable them
+          formatters = {
+            json = 'jq',
+            html = function(body)
+              return vim.fn.system({ 'tidy', '-i', '-q', '-' }, body)
+            end,
+          },
+        },
+        -- Jump to request line on run
+
+        jump_to_request = false,
+        env_file = '.env',
+        custom_dynamic_variables = {},
+        yank_dry_run = true,
+        search_back = true,
+      }
+    end,
+    keys = {
+      {
+        '\\r',
+        '<Plug>RestNvim',
+        desc = 'Test the current file',
+      },
+    },
+  },
   -- LSP Plugins
   {
     -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
@@ -1039,7 +1120,6 @@ require('lazy').setup({
         --
         -- See :h blink-cmp-config-keymap for defining your own keymap
         preset = 'default',
-        ['<C-Y>'] = { 'show', 'show_documentation', 'hide_documentation' },
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
       },
@@ -1084,11 +1164,11 @@ require('lazy').setup({
     -- change the command in the config to whatever the name of that colorscheme is.
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
+    'rose-pine/neovim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     config = function()
       ---@diagnostic disable-next-line: missing-fields
-      require('tokyonight').setup {
+      require('rose-pine').setup {
         styles = {
           comments = { italic = false }, -- Disable italics in comments
         },
@@ -1097,7 +1177,8 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.o.termguicolors = true
+      vim.cmd.colorscheme 'rose-pine'
     end,
   },
 
