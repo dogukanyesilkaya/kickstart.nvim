@@ -207,9 +207,12 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
 
--- [[ Basic Autocommands ]]
---  See `:help lua-guide-autocommands`
+--
 
+vim.keymap.set('n', 'dbw', 'vbd', { desc = 'Delete from cursor to previous word start' })
+vim.keymap.set('n', 'dbW', 'vb_d', { desc = 'Delete from cursor to start of line' })
+vim.keymap.set('n', '<leader>p', [["_dP]], { desc = 'Paste without overwriting yank' })
+vim.keymap.set('v', '<leader>p', [["_dP]], { desc = 'Paste in visual mode without overwriting yank' })
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
 --  See `:help vim.hl.on_yank()`
@@ -926,11 +929,11 @@ require('lazy').setup({
     -- change the command in the config to whatever the name of that colorscheme is.
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'rose-pine/neovim',
+    'rebelot/kanagawa.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     config = function()
       ---@diagnostic disable-next-line: missing-fields
-      require('rose-pine').setup {
+      require('kanagawa').setup {
         styles = {
           comments = { italic = false }, -- Disable italics in comments
         },
@@ -940,7 +943,7 @@ require('lazy').setup({
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
       vim.o.termguicolors = true
-      vim.cmd.colorscheme 'rose-pine'
+      vim.cmd.colorscheme 'kanagawa-dragon'
     end,
   },
 
@@ -964,6 +967,9 @@ require('lazy').setup({
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
+
+      require('mini.comment').setup()
+      require('mini.move').setup()
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
